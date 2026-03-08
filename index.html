@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>もふもふクイズ</title>
-    <!-- 子供向けの丸みを帯びたポップなフォント -->
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
-    <!-- 正解時の紙吹雪アニメーション用ライブラリ -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
@@ -53,6 +51,12 @@
             text-align: center;
             position: relative;
             border: 4px solid #FFF;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        #app::-webkit-scrollbar {
+            display: none;
         }
 
         .screen {
@@ -64,9 +68,8 @@
             display: block;
         }
 
-        /* スタート画面 */
         .title {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             color: var(--btn-pink);
             margin-bottom: 10px;
             line-height: 1.2;
@@ -80,11 +83,11 @@
         }
 
         .hero-img {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             object-fit: cover;
             border-radius: 50%;
-            border: 10px solid var(--btn-yellow);
+            border: 8px solid var(--btn-yellow);
             margin-bottom: 25px;
             box-shadow: 0 10px 20px var(--shadow-color);
         }
@@ -97,9 +100,9 @@
 
         .start-btn {
             color: #fff;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 900;
-            padding: 18px 30px;
+            padding: 15px 25px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -129,20 +132,20 @@
             box-shadow: 0 0px 0 #0288D1, 0 5px 10px rgba(2, 136, 209, 0.4);
         }
 
-        /* クイズ画面 */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
             font-weight: bold;
+            gap: 10px;
         }
 
         .question-number {
             background-color: var(--btn-yellow);
             color: white;
-            padding: 8px 20px;
+            padding: 8px 15px;
             border-radius: 30px;
             box-shadow: 0 4px 0 #F57F17;
         }
@@ -150,15 +153,16 @@
         .score-display {
             color: var(--btn-pink);
             background-color: #FCE4EC;
-            padding: 8px 20px;
+            padding: 8px 15px;
             border-radius: 30px;
+            white-space: nowrap;
         }
 
         .animal-img-container {
             width: 100%;
-            height: 260px;
+            height: 240px;
             margin-bottom: 20px;
-            border-radius: 25px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 8px 20px var(--shadow-color);
             background-color: #F5F5F5;
@@ -215,25 +219,25 @@
             font-size: 1.1rem;
             font-weight: 900;
             color: white;
-            padding: 15px 5px;
+            padding: 10px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             box-shadow: 0 8px 0 rgba(0,0,0,0.15);
-            transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
+            transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s, background-color 0.3s;
             position: relative;
             overflow: hidden;
             line-height: 1.3;
             display: flex;
             align-items: center;
             justify-content: center;
-            word-break: keep-all;
+            word-break: break-word;
             min-height: 70px;
         }
 
         .option-btn:active {
             transform: translateY(8px);
-            box-shadow: 0 0px 0 rgba(0,0,0,0.15);
+            box-shadow: 0 0px 0 rgba(0,0,0,0.15) !important;
         }
 
         .option-btn:nth-child(1) { background-color: var(--btn-blue); box-shadow: 0 8px 0 #0288D1; }
@@ -241,30 +245,25 @@
         .option-btn:nth-child(3) { background-color: var(--btn-yellow); box-shadow: 0 8px 0 #F57F17; }
         .option-btn:nth-child(4) { background-color: var(--btn-pink); box-shadow: 0 8px 0 #C2185B; }
 
-        .option-btn:nth-child(1):active { box-shadow: 0 0 0 #0288D1; }
-        .option-btn:nth-child(2):active { box-shadow: 0 0 0 #388E3C; }
-        .option-btn:nth-child(3):active { box-shadow: 0 0 0 #F57F17; }
-        .option-btn:nth-child(4):active { box-shadow: 0 0 0 #C2185B; }
-
         .correct-highlight {
             animation: correctPulse 1s infinite;
             z-index: 10;
         }
 
         .wrong-highlight {
-            opacity: 0.4;
+            opacity: 0.5;
             transform: scale(0.95);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.15) !important;
         }
 
-        /* リザルト画面 */
         .result-title {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin-bottom: 20px;
             color: var(--btn-blue);
         }
 
         .final-score {
-            font-size: 5.5rem;
+            font-size: 5rem;
             color: var(--btn-pink);
             font-weight: 900;
             margin-bottom: 10px;
@@ -272,9 +271,9 @@
         }
 
         .result-msg {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 30px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .back-btn {
@@ -287,7 +286,6 @@
             box-shadow: 0 0px 0 #388E3C, 0 5px 10px rgba(56, 142, 60, 0.4);
         }
 
-        /* アニメーション用オーバーレイ */
         #feedback-overlay {
             position: fixed;
             top: 0;
@@ -307,6 +305,7 @@
             font-weight: bold;
             opacity: 0;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            line-height: 1;
         }
 
         .feedback-mark.correct {
@@ -341,31 +340,59 @@
         }
 
         @keyframes correctPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.05); filter: brightness(1.2); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+
+        /* ローディング画面 */
+        #loading-screen {
+            display: none;
+        }
+        #loading-screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            min-height: 300px;
+        }
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #FCE4EC;
+            border-top: 6px solid var(--btn-pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-label {
+            font-size: 1.3rem;
+            color: var(--btn-pink);
+            font-weight: 900;
         }
 
         @media (max-width: 480px) {
-            .title { font-size: 3rem; }
-            .hero-img { width: 160px; height: 160px; margin-bottom: 20px; }
-            .animal-img-container { height: 220px; }
-            .option-btn { font-size: 1rem; padding: 10px 5px; min-height: 60px; }
-            .header { font-size: 1.1rem; }
-            .start-btn { font-size: 1.2rem; padding: 15px 20px; }
+            .title { font-size: 2.8rem; }
+            .hero-img { width: 150px; height: 150px; margin-bottom: 20px; }
+            .animal-img-container { height: 200px; }
+            .option-btn { font-size: 1rem; padding: 8px 5px; min-height: 60px; }
+            .header { font-size: 1rem; }
+            .start-btn { font-size: 1.1rem; padding: 12px 20px; }
         }
     </style>
 </head>
 <body>
 
     <div id="app">
-        <!-- スタート画面 -->
         <div id="start-screen" class="screen active">
             <h1 class="title">もふもふ<br>クイズ</h1>
             <p class="subtitle">しゃしんをみて なまえを あててね！<br>ぜんぶで 10もん あるよ🐾</p>
-            
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Alpaca_%2831562329701%29.jpg/500px-Alpaca_%2831562329701%29.jpg" alt="もふもふアルパカ" class="hero-img">
-            
+
+            <img id="hero-img" src="" alt="もふもふアルパカ" class="hero-img" style="display:none;">
+
             <div class="mode-select">
                 <button class="start-btn btn-animal" onclick="startGame('animal')">
                     🐼 どうぶつ
@@ -376,25 +403,26 @@
             </div>
         </div>
 
-        <!-- クイズ画面 -->
+        <div id="loading-screen" class="screen">
+            <div class="loading-spinner"></div>
+            <div class="loading-label">しゃしんを よみこんでるよ...🐾</div>
+        </div>
+
         <div id="quiz-screen" class="screen">
             <div class="header">
-                <div class="question-number">だい いち もん</div>
+                <div class="question-number" id="question-number-label">だい いち もん</div>
                 <div class="score-display">スコア: <span id="score">0</span></div>
             </div>
-            
+
             <div class="animal-img-container">
                 <div id="loading-text" class="loading-text">しゃしんを<br>よみこみちゅう...</div>
                 <div id="error-text" class="error-text">しゃしんが でないよ<br>もういちど やってみてね</div>
                 <img id="question-img" class="animal-img" src="" alt="クイズのしゃしん">
             </div>
 
-            <div class="options" id="options-container">
-                <!-- ボタンはJSで生成 -->
-            </div>
+            <div class="options" id="options-container"></div>
         </div>
 
-        <!-- リザルト画面 -->
         <div id="result-screen" class="screen">
             <h2 class="result-title">けっかは...</h2>
             <div class="final-score" id="final-score-text">0 / 10</div>
@@ -403,48 +431,60 @@
         </div>
     </div>
 
-    <!-- 正解/不正解のアニメーション用 -->
     <div id="feedback-overlay">
         <div id="feedback-mark" class="feedback-mark"></div>
     </div>
 
     <script>
-        // 画像が出ない問題や誤答を防ぐため、安定して表示されるWikipedia(Wikimedia Commons)の画像と正確な名前のセットを定義
+        /*
+         * 修正内容:
+         * ハードコードされたWikimedia画像URLはファイル名の大文字小文字の違いや
+         * ファイルの移動・削除により表示されないケースが多数ありました。
+         *
+         * Wikipedia REST API (page/summary) を使い、各動物・犬種の
+         * Wikipediaページからサムネイル画像URLを動的に取得する方式に変更。
+         * これにより、Wikimediaのファイル名変更に左右されず、
+         * 常に最新の有効な画像が表示されます。
+         */
+
         const animalData = [
-            { name: "あるぱか", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Alpaca_%2831562329701%29.jpg/600px-Alpaca_%2831562329701%29.jpg" },
-            { name: "れっさーぱんだ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Ailurus_fulgens_in_Plze%C5%88_Zoo_%2805%29.jpg/600px-Ailurus_fulgens_in_Plze%C5%88_Zoo_%2805%29.jpg" },
-            { name: "じゃいあんとぱんだ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/600px-Grosser_Panda.JPG" },
-            { name: "らっこ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg/600px-Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg" },
-            { name: "たてごとあざらし", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Harp_seal_pup.jpg/600px-Harp_seal_pup.jpg" },
-            { name: "かぴばら", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Capybara_in_the_pampas.jpg/600px-Capybara_in_the_pampas.jpg" },
-            { name: "はりねずみ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Erinaceus_europaeus_LC0119.jpg/600px-Erinaceus_europaeus_LC0119.jpg" },
-            { name: "ももんが", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Pteromys_volans_orii_2.jpg/600px-Pteromys_volans_orii_2.jpg" },
-            { name: "やく", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Bos_mutus_01.jpg/600px-Bos_mutus_01.jpg" },
-            { name: "ぺるしゃねこ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/White_Persian_Cat.jpg/600px-White_Persian_Cat.jpg" },
-            { name: "ねこ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg/600px-Cat_November_2010-1a.jpg" },
-            { name: "うさぎ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Oryctolagus_cuniculus_Rcdo.jpg/600px-Oryctolagus_cuniculus_Rcdo.jpg" },
-            { name: "もるもっと", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/George_the_amazing_guinea_pig.jpg/600px-George_the_amazing_guinea_pig.jpg" },
-            { name: "りす", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sciurus_vulgaris_-_M%C3%BCnchen.jpg/600px-Sciurus_vulgaris_-_M%C3%BCnchen.jpg" }
+            { name: "あるぱか", wiki: "Alpaca", img: "" },
+            { name: "れっさーぱんだ", wiki: "Red_panda", img: "" },
+            { name: "じゃいあんとぱんだ", wiki: "Giant_panda", img: "" },
+            { name: "らっこ", wiki: "Sea_otter", img: "" },
+            { name: "たてごとあざらし", wiki: "Harp_seal", img: "" },
+            { name: "かぴばら", wiki: "Capybara", img: "" },
+            { name: "はりねずみ", wiki: "Hedgehog", img: "" },
+            { name: "ももんが", wiki: "Japanese_dwarf_flying_squirrel", img: "" },
+            { name: "やく", wiki: "Domestic_yak", img: "" },
+            { name: "ぺるしゃねこ", wiki: "Persian_cat", img: "" },
+            { name: "ねこ", wiki: "Cat", img: "" },
+            { name: "うさぎ", wiki: "Rabbit", img: "" },
+            { name: "もるもっと", wiki: "Guinea_pig", img: "" },
+            { name: "りす", wiki: "Red_squirrel", img: "" }
         ];
 
         const dogData = [
-            { name: "しばいぬ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Shiba_Inu_Taiki.jpg/600px-Shiba_Inu_Taiki.jpg" },
-            { name: "といぷーどる", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Toy_Poodle.jpg/600px-Toy_Poodle.jpg" },
-            { name: "こーぎー", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Welchcorgipembroke.JPG/600px-Welchcorgipembroke.JPG" },
-            { name: "しべりあんはすきー", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Black-Magic-Big-Boy.jpg/600px-Black-Magic-Big-Boy.jpg" },
-            { name: "ごーるでんれとりばー", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Golden_Retriever_with_tennis_ball.jpg/600px-Golden_Retriever_with_tennis_ball.jpg" },
-            { name: "だっくすふんど", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Short-haired-Dachshund.jpg/600px-Short-haired-Dachshund.jpg" },
-            { name: "ぽめらにあん", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Pomeranian_Dog.jpg/600px-Pomeranian_Dog.jpg" },
-            { name: "ふれんちぶるどっぐ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/French_Bulldog_222.jpg/600px-French_Bulldog_222.jpg" },
-            { name: "まるちーず", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Maltese_dog.jpg/600px-Maltese_dog.jpg" },
-            { name: "ぱぐ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Sad-pug.jpg/600px-Sad-pug.jpg" },
-            { name: "ちわわ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Chihuahua1_bvdb.jpg/600px-Chihuahua1_bvdb.jpg" },
-            { name: "びーぐる", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Beagle_600.jpg/600px-Beagle_600.jpg" },
-            { name: "だるめしあん", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Dalmatian_standing_looking_right.jpg/600px-Dalmatian_standing_looking_right.jpg" },
-            { name: "せんとばーなーど", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/St._Bernard_Dog.jpg/600px-St._Bernard_Dog.jpg" },
-            { name: "あきたけん", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Akita_inu_in_Riga_1.JPG/600px-Akita_inu_in_Riga_1.JPG" },
-            { name: "よーくしゃーてりあ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Yorkshire_Terrier.jpg/600px-Yorkshire_Terrier.jpg" },
-            { name: "びしょんふりーぜ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Bichon_Fris%C3%A9_-_st%C3%A5ende_hund.jpg/600px-Bichon_Fris%C3%A9_-_st%C3%A5ende_hund.jpg" }
+            { name: "しばいぬ", wiki: "Shiba_Inu", img: "" },
+            { name: "といぷーどる", wiki: "Poodle", img: "" },
+            { name: "こーぎー", wiki: "Pembroke_Welsh_Corgi", img: "" },
+            { name: "しべりあんはすきー", wiki: "Siberian_Husky", img: "" },
+            { name: "さもえど", wiki: "Samoyed_dog", img: "" },
+            { name: "ごーるでんれとりばー", wiki: "Golden_Retriever", img: "" },
+            { name: "らぶらどーる", wiki: "Labrador_Retriever", img: "" },
+            { name: "だっくすふんど", wiki: "Dachshund", img: "" },
+            { name: "ぽめらにあん", wiki: "Pomeranian_dog", img: "" },
+            { name: "ふれんちぶるどっぐ", wiki: "French_Bulldog", img: "" },
+            { name: "まるちーず", wiki: "Maltese_dog", img: "" },
+            { name: "ぱぐ", wiki: "Pug", img: "" },
+            { name: "ちわわ", wiki: "Chihuahua_(dog)", img: "" },
+            { name: "びーぐる", wiki: "Beagle", img: "" },
+            { name: "だるめしあん", wiki: "Dalmatian_dog", img: "" },
+            { name: "せんとばーなーど", wiki: "St._Bernard_(dog)", img: "" },
+            { name: "あきたけん", wiki: "Akita_(dog)", img: "" },
+            { name: "よーくしゃーてりあ", wiki: "Yorkshire_Terrier", img: "" },
+            { name: "びしょんふりーぜ", wiki: "Bichon_Frise", img: "" },
+            { name: "ぼーだーこりー", wiki: "Border_Collie", img: "" }
         ];
 
         let currentDataset = [];
@@ -453,8 +493,67 @@
         let score = 0;
         let isAnimating = false;
 
-        // 漢数字への変換マスタ
         const kanjiNumbers = ['いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう', 'じゅう'];
+
+        // --- 画像取得: Wikipedia REST API ---
+
+        async function fetchWikiImage(title) {
+            try {
+                const url = 'https://en.wikipedia.org/api/rest_v1/page/summary/'
+                    + encodeURIComponent(title);
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('API error: ' + res.status);
+                const data = await res.json();
+
+                // originalimage があればそのURLのサムネ幅を600pxに変更して使用
+                if (data.originalimage && data.originalimage.source) {
+                    const src = data.originalimage.source;
+                    // Wikimedia thumbURL形式ならサイズ変更、そうでなければそのまま
+                    if (src.includes('/commons/')) {
+                        // オリジナル画像のthumb URLを生成
+                        const filename = src.split('/').pop();
+                        const pathParts = src.match(/(.*\/commons\/)(.*)/);
+                        if (pathParts) {
+                            return src.replace('/commons/', '/commons/thumb/')
+                                .replace(new RegExp(filename + '$'), filename + '/600px-' + filename);
+                        }
+                    }
+                    return src;
+                }
+
+                // thumbnailがあればサイズを大きくして使用
+                if (data.thumbnail && data.thumbnail.source) {
+                    return data.thumbnail.source.replace(/\/\d+px-/, '/600px-');
+                }
+
+                return '';
+            } catch (e) {
+                console.warn('画像取得失敗:', title, e);
+                return '';
+            }
+        }
+
+        async function loadImages(dataset) {
+            const promises = dataset.map(async (item) => {
+                if (!item.img) {
+                    item.img = await fetchWikiImage(item.wiki);
+                }
+            });
+            await Promise.all(promises);
+        }
+
+        // トップ画面のヒーロー画像
+        async function loadHeroImage() {
+            const heroUrl = await fetchWikiImage('Alpaca');
+            if (heroUrl) {
+                const heroImg = document.getElementById('hero-img');
+                heroImg.onload = () => { heroImg.style.display = 'block'; };
+                heroImg.onerror = () => { heroImg.style.display = 'none'; };
+                heroImg.src = heroUrl;
+            }
+        }
+
+        // --- 画面切替 ---
 
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
@@ -463,7 +562,8 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // 配列のシャッフル（完全にランダム化）
+        // --- ユーティリティ ---
+
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -473,196 +573,185 @@
             return arr;
         }
 
-        // ダミー選択肢を同じカテゴリから3つランダムに選ぶ
         function generateOptions(correctName, fullData) {
             const options = [correctName];
-            const others = fullData.filter(item => item.name !== correctName);
-            const shuffledOthers = shuffleArray(others);
-            
-            options.push(shuffledOthers[0].name);
-            options.push(shuffledOthers[1].name);
-            options.push(shuffledOthers[2].name);
-            
-            return shuffleArray(options); // 正解の場所もランダムにする
-        }
-
-        function startGame(mode) {
-            score = 0;
-            currentQuestionIndex = 0;
-            
-            if (mode === 'dog') {
-                currentDataset = dogData;
-                document.querySelector('.question-number').style.backgroundColor = 'var(--btn-blue)';
-                document.querySelector('.question-number').style.boxShadow = '0 4px 0 #0288D1';
-            } else {
-                currentDataset = animalData;
-                document.querySelector('.question-number').style.backgroundColor = 'var(--btn-yellow)';
-                document.querySelector('.question-number').style.boxShadow = '0 4px 0 #F57F17';
+            const others = shuffleArray(fullData.filter(item => item.name !== correctName));
+            for (let i = 0; i < others.length && options.length < 4; i++) {
+                if (!options.includes(others[i].name)) {
+                    options.push(others[i].name);
+                }
             }
-            
-            // データセット全体をシャッフルし、先頭の10個を問題にする
-            quizList = shuffleArray(currentDataset).slice(0, 10);
-            
-            document.getElementById('score').innerText = score;
-            
-            loadQuestion();
-            switchScreen('quiz-screen');
+            return shuffleArray(options);
         }
 
-        function loadQuestion() {
-            isAnimating = false;
-            const currentItem = quizList[currentQuestionIndex];
-            
-            // ヘッダー更新
-            document.querySelector('.question-number').innerText = `だい ${kanjiNumbers[currentQuestionIndex]} もん`;
-            
-            // 画像の読み込み処理
-            const imgEl = document.getElementById('question-img');
+        // --- クイズ進行 ---
+
+        function updateQuestionNumber() {
+            const label = document.getElementById('question-number-label');
+            label.textContent = `だい ${kanjiNumbers[currentQuestionIndex]} もん`;
+        }
+
+        function resetImageState() {
+            const img = document.getElementById('question-img');
             const loadingText = document.getElementById('loading-text');
             const errorText = document.getElementById('error-text');
-            
-            imgEl.className = 'animal-img'; // loadedクラスを外して非表示に
+            img.classList.remove('loaded');
+            img.style.display = 'block';
             loadingText.style.display = 'block';
             errorText.style.display = 'none';
-            
-            imgEl.onload = () => {
-                imgEl.classList.add('loaded'); // フェードイン
-                loadingText.style.display = 'none';
-                preloadNextImage(); // 次の画像を裏で読み込んでおく
-            };
-            
-            imgEl.onerror = () => {
-                loadingText.style.display = 'none';
-                errorText.style.display = 'block';
-            };
+        }
 
-            // 画像URLをセットして読み込み開始
-            imgEl.src = currentItem.img;
+        function showQuestion() {
+            if (currentQuestionIndex >= quizList.length) {
+                showResult();
+                return;
+            }
 
-            // 選択肢の生成
-            const options = generateOptions(currentItem.name, currentDataset);
+            isAnimating = false;
+            updateQuestionNumber();
+
+            const question = quizList[currentQuestionIndex];
+            const img = document.getElementById('question-img');
+            const loadingText = document.getElementById('loading-text');
+            const errorText = document.getElementById('error-text');
             const optionsContainer = document.getElementById('options-container');
+
+            resetImageState();
             optionsContainer.innerHTML = '';
 
-            options.forEach(optionText => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = optionText;
-                
-                // 文字数が長い場合はフォントサイズを少し小さくする調整
-                if(optionText.length >= 8) {
-                    btn.style.fontSize = '0.95rem';
-                }
-                
-                btn.onclick = () => checkAnswer(optionText, currentItem.name, btn);
-                optionsContainer.appendChild(btn);
+            const options = generateOptions(question.name, currentDataset);
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(option, question.name);
+                optionsContainer.appendChild(button);
             });
-        }
 
-        // 次の画像を事前読み込みして待ち時間を減らす
-        function preloadNextImage() {
-            if (currentQuestionIndex + 1 < quizList.length) {
-                const img = new Image();
-                img.src = quizList[currentQuestionIndex + 1].img;
+            img.onload = () => {
+                loadingText.style.display = 'none';
+                errorText.style.display = 'none';
+                img.classList.add('loaded');
+            };
+
+            img.onerror = () => {
+                loadingText.style.display = 'none';
+                errorText.style.display = 'block';
+                img.style.display = 'none';
+            };
+
+            if (question.img) {
+                img.style.display = 'block';
+                img.src = question.img;
+                img.alt = `${question.name} のしゃしん`;
+            } else {
+                loadingText.style.display = 'none';
+                errorText.style.display = 'block';
+                img.style.display = 'none';
             }
         }
 
-        function checkAnswer(selected, correct, selectedBtn) {
-            if (isAnimating) return; // アニメーション中の連打防止
-            isAnimating = true;
-
-            const isCorrect = selected === correct;
-            
-            // ボタンのハイライト演出
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(btn => {
-                if (btn.innerText === correct) {
-                    btn.classList.add('correct-highlight'); // 正解をピカピカさせる
-                } else if (btn === selectedBtn && !isCorrect) {
-                    btn.classList.add('wrong-highlight'); // 間違えたボタンを暗くする
-                } else if (!isCorrect) {
-                    btn.classList.add('wrong-highlight'); // 他のボタンも暗くする
-                }
+        function fireConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
             });
-
-            showFeedback(isCorrect);
-
-            if (isCorrect) {
-                score++;
-                document.getElementById('score').innerText = score;
-                triggerConfetti();
-            }
-
-            // 少し待ってから次の問題へ
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < quizList.length) {
-                    loadQuestion();
-                } else {
-                    showResult();
-                }
-            }, 1500); 
         }
 
         function showFeedback(isCorrect) {
             const overlay = document.getElementById('feedback-overlay');
             const mark = document.getElementById('feedback-mark');
-            
             overlay.style.visibility = 'visible';
-            
-            if (isCorrect) {
-                mark.innerText = '⭕️';
-                mark.className = 'feedback-mark correct';
-            } else {
-                mark.innerText = '❌';
-                mark.className = 'feedback-mark wrong';
-            }
-
-            // アニメーション終了後にリセット
+            mark.className = 'feedback-mark';
+            mark.textContent = isCorrect ? '○' : '✕';
+            mark.classList.add(isCorrect ? 'correct' : 'wrong');
             setTimeout(() => {
-                mark.className = 'feedback-mark';
                 overlay.style.visibility = 'hidden';
+                mark.className = 'feedback-mark';
             }, 1000);
         }
 
-        function triggerConfetti() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#FFCA28', '#29B6F6', '#66BB6A', '#EC407A', '#ffffff'],
-                disableForReducedMotion: true,
-                zIndex: 1000
+        function selectAnswer(selected, correct) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const buttons = [...document.querySelectorAll('.option-btn')];
+            const isCorrect = selected === correct;
+
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+                fireConfetti();
+            }
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correct) {
+                    btn.classList.add('correct-highlight');
+                } else if (btn.textContent === selected && !isCorrect) {
+                    btn.classList.add('wrong-highlight');
+                } else if (!isCorrect) {
+                    btn.classList.add('wrong-highlight');
+                }
             });
+
+            showFeedback(isCorrect);
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 1300);
+        }
+
+        // --- ゲーム開始 ---
+
+        async function startGame(mode) {
+            score = 0;
+            currentQuestionIndex = 0;
+            document.getElementById('score').textContent = score;
+
+            currentDataset = mode === 'dog' ? dogData : animalData;
+
+            // ローディング画面を表示して画像を並列取得
+            switchScreen('loading-screen');
+            await loadImages(currentDataset);
+
+            // 画像が取得できたものだけでクイズを構成
+            const validItems = currentDataset.filter(item => item.img);
+            if (validItems.length < 4) {
+                alert('しゃしんが よみこめませんでした。\nインターネットに つないでいるか かくにんしてね。');
+                switchScreen('start-screen');
+                return;
+            }
+
+            quizList = shuffleArray(validItems).slice(0, Math.min(10, validItems.length));
+            switchScreen('quiz-screen');
+            showQuestion();
+        }
+
+        // --- 結果表示 ---
+
+        function getResultMessage(finalScore) {
+            if (finalScore === 10) return "すごーい！ ぜんもんせいかい！ もふもふはかせだね！";
+            if (finalScore >= 8) return "すごい！ とっても じょうずに できたね！";
+            if (finalScore >= 5) return "がんばったね！ たくさん あてられたよ！";
+            if (finalScore >= 3) return "よくできました！ もういちど ちょうせんしてみよう！";
+            return "がんばったね！ つぎは もっと あてられるよ！";
         }
 
         function showResult() {
-            document.getElementById('final-score-text').innerText = `${score} / 10`;
-            
-            let msg = '';
-            if (score === 10) {
-                msg = 'まんてん！✨\nもふもふマスター だね！🎉';
-                setTimeout(() => {
-                    triggerConfetti();
-                    setTimeout(triggerConfetti, 400);
-                    setTimeout(triggerConfetti, 800);
-                }, 500);
-            } else if (score >= 7) {
-                msg = 'すごい！\nよくできました！💕';
-                setTimeout(triggerConfetti, 500);
-            } else if (score >= 4) {
-                msg = 'がんばったね！\nもうすこし！🌟';
-            } else {
-                msg = 'また ちょうせん\nしてみてね！🐾';
-            }
-            
-            document.getElementById('result-message').innerHTML = msg.replace(/\n/g, '<br>');
+            document.getElementById('final-score-text').textContent = `${score} / ${quizList.length}`;
+            document.getElementById('result-message').textContent = getResultMessage(score);
             switchScreen('result-screen');
         }
 
         function goToStart() {
             switchScreen('start-screen');
         }
+
+        // --- 起動 ---
+        loadHeroImage();
     </script>
 </body>
 </html>
