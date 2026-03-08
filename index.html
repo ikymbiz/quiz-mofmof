@@ -74,37 +74,58 @@
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
             color: #8D6E63;
         }
 
         .hero-img {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
             border-radius: 50%;
             border: 10px solid var(--btn-yellow);
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             box-shadow: 0 10px 20px var(--shadow-color);
         }
 
+        .mode-select {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .start-btn {
-            background-color: var(--btn-yellow);
             color: #fff;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 900;
-            padding: 15px 50px;
+            padding: 15px 30px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 0 #F57F17, 0 15px 20px rgba(245, 127, 23, 0.4);
             transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .start-btn:active {
+        .btn-animal {
+            background-color: var(--btn-yellow);
+            box-shadow: 0 8px 0 #F57F17, 0 15px 20px rgba(245, 127, 23, 0.4);
+        }
+        .btn-animal:active {
             transform: translateY(8px);
             box-shadow: 0 0px 0 #F57F17, 0 5px 10px rgba(245, 127, 23, 0.4);
+        }
+
+        .btn-dog {
+            background-color: var(--btn-blue);
+            box-shadow: 0 8px 0 #0288D1, 0 15px 20px rgba(2, 136, 209, 0.4);
+        }
+        .btn-dog:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 #0288D1, 0 5px 10px rgba(2, 136, 209, 0.4);
         }
 
         /* クイズ画面 */
@@ -113,7 +134,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
         }
 
@@ -134,8 +155,8 @@
 
         .animal-img-container {
             width: 100%;
-            height: 280px;
-            margin-bottom: 25px;
+            height: 260px;
+            margin-bottom: 20px;
             border-radius: 25px;
             overflow: hidden;
             box-shadow: 0 8px 20px var(--shadow-color);
@@ -155,6 +176,20 @@
             z-index: 1;
         }
 
+        .error-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #E53935;
+            font-size: 1rem;
+            font-weight: bold;
+            z-index: 1;
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
         .animal-img {
             width: 100%;
             height: 100%;
@@ -172,21 +207,22 @@
         .options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
         .option-btn {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 900;
             color: white;
-            padding: 20px 10px;
+            padding: 18px 5px;
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
             box-shadow: 0 8px 0 rgba(0,0,0,0.15);
             transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
             position: relative;
             overflow: hidden;
+            line-height: 1.2;
         }
 
         .option-btn:active {
@@ -233,8 +269,18 @@
 
         .result-msg {
             font-size: 1.5rem;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             line-height: 1.5;
+        }
+
+        .back-btn {
+            background-color: var(--btn-green);
+            box-shadow: 0 8px 0 #388E3C, 0 15px 20px rgba(56, 142, 60, 0.4);
+            margin: 0 auto;
+        }
+        .back-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 #388E3C, 0 5px 10px rgba(56, 142, 60, 0.4);
         }
 
         /* アニメーション用オーバーレイ */
@@ -298,9 +344,11 @@
 
         @media (max-width: 480px) {
             .title { font-size: 3rem; }
-            .animal-img-container { height: 240px; }
-            .option-btn { font-size: 1.4rem; padding: 15px 10px; }
+            .hero-img { width: 180px; height: 180px; margin-bottom: 20px; }
+            .animal-img-container { height: 220px; }
+            .option-btn { font-size: 1.2rem; padding: 15px 5px; }
             .header { font-size: 1.1rem; }
+            .start-btn { font-size: 1.3rem; padding: 12px 25px; }
         }
     </style>
 </head>
@@ -310,10 +358,18 @@
         <!-- スタート画面 -->
         <div id="start-screen" class="screen active">
             <h1 class="title">もふもふ<br>クイズ</h1>
-            <p class="subtitle">どうぶつの なまえを あててね！<br>ぜんぶで 10もん あるよ🐾</p>
-            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop" alt="もふもふ猫" class="hero-img">
-            <br>
-            <button class="start-btn" onclick="startGame()">スタート！</button>
+            <p class="subtitle">しゃしんをみて なまえを あててね！<br>ぜんぶで 10もん あるよ🐾</p>
+            
+            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=80" alt="もふもふ猫" class="hero-img">
+            
+            <div class="mode-select">
+                <button class="start-btn btn-animal" onclick="startGame('animal')">
+                    🐱 いろんな どうぶつ
+                </button>
+                <button class="start-btn btn-dog" onclick="startGame('dog')">
+                    🐶 いぬの しゅるい
+                </button>
+            </div>
         </div>
 
         <!-- クイズ画面 -->
@@ -325,7 +381,8 @@
             
             <div class="animal-img-container">
                 <div id="loading-text" class="loading-text">しゃしんを よみこみちゅう...</div>
-                <img id="question-img" class="animal-img" src="" alt="どうぶつ">
+                <div id="error-text" class="error-text">しゃしんが でないよ<br>もういちど やってみてね</div>
+                <img id="question-img" class="animal-img" src="" alt="クイズのしゃしん">
             </div>
 
             <div class="options" id="options-container">
@@ -338,7 +395,7 @@
             <h2 class="result-title">けっかは...</h2>
             <div class="final-score" id="final-score-text">0 / 10</div>
             <p class="result-msg" id="result-message">がんばったね！</p>
-            <button class="start-btn" onclick="goToStart()">もういっかい</button>
+            <button class="start-btn back-btn" onclick="goToStart()">さいしょに もどる</button>
         </div>
     </div>
 
@@ -348,18 +405,33 @@
     </div>
 
     <script>
-        // 小さな女の子が好きそうな「もふもふ動物」の確実な写真データ
-        const rawQuizData = [
-            { img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop', answer: 'ねこ', wrong: ['いぬ', 'きつね', 'たぬき'] },
-            { img: 'https://images.unsplash.com/photo-1591160690555-5debfba289f0?q=80&w=500&auto=format&fit=crop', answer: 'いぬ', wrong: ['ねこ', 'うさぎ', 'くま'] },
-            { img: 'https://images.unsplash.com/photo-1585110396000-c9faf4e4f9b8?q=80&w=500&auto=format&fit=crop', answer: 'うさぎ', wrong: ['ねずみ', 'はむすたー', 'いぬ'] },
-            { img: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?q=80&w=500&auto=format&fit=crop', answer: 'ぱんだ', wrong: ['しろくま', 'あらいぐま', 'こあら'] },
-            { img: 'https://images.unsplash.com/photo-1533514114760-4389f572ae26?q=80&w=500&auto=format&fit=crop', answer: 'もるもっと', wrong: ['はむすたー', 'うさぎ', 'ねずみ'] },
-            { img: 'https://images.unsplash.com/photo-1507666405895-422eee7d517f?q=80&w=500&auto=format&fit=crop', answer: 'りす', wrong: ['ねずみ', 'ももんが', 'きつね'] },
-            { img: 'https://images.unsplash.com/photo-1425082661705-1834bfd0999c?q=80&w=500&auto=format&fit=crop', answer: 'はむすたー', wrong: ['ねずみ', 'うさぎ', 'もるもっと'] },
-            { img: 'https://images.unsplash.com/photo-1548255745-779872c0c9ab?q=80&w=500&auto=format&fit=crop', answer: 'れっさーぱんだ', wrong: ['あらいぐま', 'ぱんだ', 'きつね'] },
-            { img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=500&auto=format&fit=crop', answer: 'ひつじ', wrong: ['あるぱか', 'やぎ', 'うし'] },
-            { img: 'https://images.unsplash.com/photo-1614031679201-163e52825596?q=80&w=500&auto=format&fit=crop', answer: 'ひよこ', wrong: ['あひる', 'にわとり', 'すずめ'] }
+        // 画像が表示されない問題を解決するため、安定した固定IDの高画質URLに変更
+        // 小さな女の子が好きそうな「もふもふ動物」
+        const animalQuizData = [
+            { img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=80', answer: 'ねこ', wrong: ['いぬ', 'きつね', 'たぬき'] },
+            { img: 'https://images.unsplash.com/photo-1591160690555-5debfba289f0?w=500&q=80', answer: 'いぬ', wrong: ['ねこ', 'うさぎ', 'くま'] },
+            { img: 'https://images.unsplash.com/photo-1585110396000-c9faf4e4f9b8?w=500&q=80', answer: 'うさぎ', wrong: ['ねずみ', 'はむすたー', 'いぬ'] },
+            { img: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=500&q=80', answer: 'ぱんだ', wrong: ['しろくま', 'あらいぐま', 'こあら'] },
+            { img: 'https://images.unsplash.com/photo-1533514114760-4389f572ae26?w=500&q=80', answer: 'もるもっと', wrong: ['はむすたー', 'うさぎ', 'ねずみ'] },
+            { img: 'https://images.unsplash.com/photo-1507666405895-422eee7d517f?w=500&q=80', answer: 'りす', wrong: ['ねずみ', 'ももんが', 'きつね'] },
+            { img: 'https://images.unsplash.com/photo-1425082661705-1834bfd0999c?w=500&q=80', answer: 'はむすたー', wrong: ['ねずみ', 'うさぎ', 'もるもっと'] },
+            { img: 'https://images.unsplash.com/photo-1548255745-779872c0c9ab?w=500&q=80', answer: 'れっさーぱんだ', wrong: ['あらいぐま', 'ぱんだ', 'きつね'] },
+            { img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=500&q=80', answer: 'ひつじ', wrong: ['あるぱか', 'やぎ', 'うし'] },
+            { img: 'https://images.unsplash.com/photo-1589182373814-fd81b0a8809f?w=500&q=80', answer: 'あるぱか', wrong: ['ひつじ', 'らくだ', 'やぎ'] }
+        ];
+
+        // 新しく追加：犬の種類クイズ
+        const dogQuizData = [
+            { img: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=80', answer: 'ぽめらにあん', wrong: ['といぷーどる', 'ちわわ', 'まるちーず'] },
+            { img: 'https://images.unsplash.com/photo-1605897472359-85e4b94d685d?w=500&q=80', answer: 'といぷーどる', wrong: ['ぽめらにあん', 'まるちーず', 'びしょんふりぜ'] },
+            { img: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&q=80', answer: 'しばいぬ', wrong: ['あきたけん', 'こーぎー', 'ぽめらにあん'] },
+            { img: 'https://images.unsplash.com/photo-1605639744155-21d1577bc1b6?w=500&q=80', answer: 'ちわわ', wrong: ['ぱぴよん', 'ぽめらにあん', 'だっくすふんど'] },
+            { img: 'https://images.unsplash.com/photo-1527526029430-319f10814151?w=500&q=80', answer: 'ごーるでん', wrong: ['らぶらどーる', 'しばいぬ', 'こーぎー'] },
+            { img: 'https://images.unsplash.com/photo-1612195583950-b8fd34c87093?w=500&q=80', answer: 'だっくすふんど', wrong: ['こーぎー', 'ちわわ', 'びーぐる'] },
+            { img: 'https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?w=500&q=80', answer: 'ぱぐ', wrong: ['ふれんちぶる', 'ぶるどっぐ', 'ぼすとんてりあ'] },
+            { img: 'https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?w=500&q=80', answer: 'ふれんちぶる', wrong: ['ぱぐ', 'ぶるどっぐ', 'ちわわ'] },
+            { img: 'https://images.unsplash.com/photo-1519098901909-b1553a1190af?w=500&q=80', answer: 'こーぎー', wrong: ['しばいぬ', 'だっくすふんど', 'びーぐる'] },
+            { img: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&q=80', answer: 'まるちーず', wrong: ['といぷーどる', 'ぽめらにあん', 'ちわわ'] }
         ];
 
         let currentQuestions = [];
@@ -387,10 +459,21 @@
             return arr;
         }
 
-        function startGame() {
+        function startGame(mode) {
             score = 0;
             currentQuestionIndex = 0;
-            currentQuestions = shuffleArray(rawQuizData).slice(0, 10); // 10問をランダムに
+            
+            // モードによって問題を切り替え
+            if (mode === 'dog') {
+                currentQuestions = shuffleArray(dogQuizData).slice(0, 10);
+                document.querySelector('.question-number').style.backgroundColor = 'var(--btn-blue)';
+                document.querySelector('.question-number').style.boxShadow = '0 4px 0 #0288D1';
+            } else {
+                currentQuestions = shuffleArray(animalQuizData).slice(0, 10);
+                document.querySelector('.question-number').style.backgroundColor = 'var(--btn-yellow)';
+                document.querySelector('.question-number').style.boxShadow = '0 4px 0 #F57F17';
+            }
+            
             document.getElementById('score').innerText = score;
             
             loadQuestion();
@@ -407,14 +490,24 @@
             // 画像の読み込み処理
             const imgEl = document.getElementById('question-img');
             const loadingText = document.getElementById('loading-text');
+            const errorText = document.getElementById('error-text');
             
             imgEl.className = 'animal-img'; // loadedクラスを外して非表示に
             loadingText.style.display = 'block'; // ローディング文字を表示
+            errorText.style.display = 'none';
             
             imgEl.onload = () => {
                 imgEl.classList.add('loaded'); // フェードイン
                 loadingText.style.display = 'none';
             };
+            
+            // 万が一画像が読み込めなかった場合のエラー処理
+            imgEl.onerror = () => {
+                loadingText.style.display = 'none';
+                errorText.style.display = 'block';
+            };
+
+            // 画像URLをセットして読み込み開始
             imgEl.src = q.img;
 
             // 選択肢の生成
@@ -466,7 +559,7 @@
                 } else {
                     showResult();
                 }
-            }, 1500); // 演出を見せるために待機時間を少し延長
+            }, 1500); 
         }
 
         function showFeedback(isCorrect) {
@@ -492,11 +585,12 @@
 
         function triggerConfetti() {
             confetti({
-                particleCount: 120,
-                spread: 80,
+                particleCount: 100,
+                spread: 70,
                 origin: { y: 0.6 },
                 colors: ['#FFCA28', '#29B6F6', '#66BB6A', '#EC407A', '#ffffff'],
-                disableForReducedMotion: true
+                disableForReducedMotion: true,
+                zIndex: 1000
             });
         }
 
@@ -508,7 +602,8 @@
                 msg = 'まんてん！✨\nもふもふマスター だね！🎉';
                 setTimeout(() => {
                     triggerConfetti();
-                    setTimeout(triggerConfetti, 300);
+                    setTimeout(triggerConfetti, 400);
+                    setTimeout(triggerConfetti, 800);
                 }, 500);
             } else if (score >= 7) {
                 msg = 'すごい！\nよくできました！💕';
