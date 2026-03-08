@@ -26,7 +26,7 @@
             padding: 0;
             font-family: 'M PLUS Rounded 1c', sans-serif;
             user-select: none;
-            touch-action: manipulation; /* スマホでのダブルタップズーム防止 */
+            touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -97,7 +97,7 @@
 
         .start-btn {
             color: #fff;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
             padding: 18px 30px;
             border: none;
@@ -108,7 +108,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
         .btn-animal {
@@ -212,10 +212,10 @@
         }
 
         .option-btn {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 900;
             color: white;
-            padding: 18px 5px;
+            padding: 15px 5px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
@@ -223,8 +223,12 @@
             transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
             position: relative;
             overflow: hidden;
-            line-height: 1.2;
-            letter-spacing: 1px;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: keep-all;
+            min-height: 70px;
         }
 
         .option-btn:active {
@@ -232,7 +236,6 @@
             box-shadow: 0 0px 0 rgba(0,0,0,0.15);
         }
 
-        /* 選択肢のカラーバリエーション */
         .option-btn:nth-child(1) { background-color: var(--btn-blue); box-shadow: 0 8px 0 #0288D1; }
         .option-btn:nth-child(2) { background-color: var(--btn-green); box-shadow: 0 8px 0 #388E3C; }
         .option-btn:nth-child(3) { background-color: var(--btn-yellow); box-shadow: 0 8px 0 #F57F17; }
@@ -243,7 +246,6 @@
         .option-btn:nth-child(3):active { box-shadow: 0 0 0 #F57F17; }
         .option-btn:nth-child(4):active { box-shadow: 0 0 0 #C2185B; }
 
-        /* 正解・不正解時のハイライト */
         .correct-highlight {
             animation: correctPulse 1s infinite;
             z-index: 10;
@@ -346,11 +348,11 @@
 
         @media (max-width: 480px) {
             .title { font-size: 3rem; }
-            .hero-img { width: 180px; height: 180px; margin-bottom: 20px; }
+            .hero-img { width: 160px; height: 160px; margin-bottom: 20px; }
             .animal-img-container { height: 220px; }
-            .option-btn { font-size: 1.2rem; padding: 15px 5px; }
+            .option-btn { font-size: 1rem; padding: 10px 5px; min-height: 60px; }
             .header { font-size: 1.1rem; }
-            .start-btn { font-size: 1.3rem; padding: 15px 20px; }
+            .start-btn { font-size: 1.2rem; padding: 15px 20px; }
         }
     </style>
 </head>
@@ -362,11 +364,11 @@
             <h1 class="title">もふもふ<br>クイズ</h1>
             <p class="subtitle">しゃしんをみて なまえを あててね！<br>ぜんぶで 10もん あるよ🐾</p>
             
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg/500px-Cat_November_2010-1a.jpg" alt="もふもふ猫" class="hero-img">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Alpaca_%2831562329701%29.jpg/500px-Alpaca_%2831562329701%29.jpg" alt="もふもふアルパカ" class="hero-img">
             
             <div class="mode-select">
                 <button class="start-btn btn-animal" onclick="startGame('animal')">
-                    🐱 どうぶつ
+                    🐼 どうぶつ
                 </button>
                 <button class="start-btn btn-dog" onclick="startGame('dog')">
                     🐶 いぬのしゅるい
@@ -407,40 +409,46 @@
     </div>
 
     <script>
-        // 画像リンク切れや不一致を防ぐため、安定したWikipedia(Wikimedia Commons)の画像に変更
-        // 小さな女の子が好きそうな「もふもふ動物」を正確に設定
-        const animalQuizData = [
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg/500px-Cat_November_2010-1a.jpg', answer: 'ねこ', wrong: ['いぬ', 'うさぎ', 'たぬき'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Oryctolagus_cuniculus_Rcdo.jpg/500px-Oryctolagus_cuniculus_Rcdo.jpg', answer: 'うさぎ', wrong: ['ねずみ', 'いぬ', 'はむすたー'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/500px-Grosser_Panda.JPG', answer: 'ぱんだ', wrong: ['しろくま', 'こあら', 'あらいぐま'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/George_the_amazing_guinea_pig.jpg/500px-George_the_amazing_guinea_pig.jpg', answer: 'もるもっと', wrong: ['はむすたー', 'うさぎ', 'ねずみ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sciurus_vulgaris_-_M%C3%BCnchen.jpg/500px-Sciurus_vulgaris_-_M%C3%BCnchen.jpg', answer: 'りす', wrong: ['ねずみ', 'ももんが', 'きつね'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Dwarf_hamster.jpg/500px-Dwarf_hamster.jpg', answer: 'はむすたー', wrong: ['ねずみ', 'もるもっと', 'うさぎ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Ailurus_fulgens_in_Plze%C5%88_Zoo_%2805%29.jpg/500px-Ailurus_fulgens_in_Plze%C5%88_Zoo_%2805%29.jpg', answer: 'れっさーぱんだ', wrong: ['あらいぐま', 'ぱんだ', 'きつね'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flock_of_sheep.jpg/500px-Flock_of_sheep.jpg', answer: 'ひつじ', wrong: ["あるぱか", 'やぎ', 'うし'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Alpaca_%2831562329701%29.jpg/500px-Alpaca_%2831562329701%29.jpg', answer: 'あるぱか', wrong: ['ひつじ', 'らくだ', 'やぎ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Fox_-_British_Wildlife_Centre_%2817429406401%29.jpg/500px-Fox_-_British_Wildlife_Centre_%2817429406401%29.jpg', answer: 'きつね', wrong: ['いぬ', 'たぬき', 'おおかみ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Wolf_running_in_snow.jpg/500px-Wolf_running_in_snow.jpg', answer: 'おおかみ', wrong: ['いぬ', 'きつね', 'たぬき'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Raccoon_in_Central_Park_%2871987%29.jpg/500px-Raccoon_in_Central_Park_%2871987%29.jpg', answer: 'あらいぐま', wrong: ['たぬき', 'れっさーぱんだ', 'くま'] }
+        // 画像が出ない問題や誤答を防ぐため、安定して表示されるWikipedia(Wikimedia Commons)の画像と正確な名前のセットを定義
+        const animalData = [
+            { name: "あるぱか", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Alpaca_%2831562329701%29.jpg/600px-Alpaca_%2831562329701%29.jpg" },
+            { name: "れっさーぱんだ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Ailurus_fulgens_in_Plze%C5%88_Zoo_%2805%29.jpg/600px-Ailurus_fulgens_in_Plze%C5%88_Zoo_%2805%29.jpg" },
+            { name: "じゃいあんとぱんだ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/600px-Grosser_Panda.JPG" },
+            { name: "らっこ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg/600px-Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg" },
+            { name: "たてごとあざらし", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Harp_seal_pup.jpg/600px-Harp_seal_pup.jpg" },
+            { name: "かぴばら", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Capybara_in_the_pampas.jpg/600px-Capybara_in_the_pampas.jpg" },
+            { name: "はりねずみ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Erinaceus_europaeus_LC0119.jpg/600px-Erinaceus_europaeus_LC0119.jpg" },
+            { name: "ももんが", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Pteromys_volans_orii_2.jpg/600px-Pteromys_volans_orii_2.jpg" },
+            { name: "やく", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Bos_mutus_01.jpg/600px-Bos_mutus_01.jpg" },
+            { name: "ぺるしゃねこ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/White_Persian_Cat.jpg/600px-White_Persian_Cat.jpg" },
+            { name: "ねこ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg/600px-Cat_November_2010-1a.jpg" },
+            { name: "うさぎ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Oryctolagus_cuniculus_Rcdo.jpg/600px-Oryctolagus_cuniculus_Rcdo.jpg" },
+            { name: "もるもっと", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/George_the_amazing_guinea_pig.jpg/600px-George_the_amazing_guinea_pig.jpg" },
+            { name: "りす", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sciurus_vulgaris_-_M%C3%BCnchen.jpg/600px-Sciurus_vulgaris_-_M%C3%BCnchen.jpg" }
         ];
 
-        // 犬の種類クイズデータ（正確な犬種画像をWikipediaから取得）
-        const dogQuizData = [
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Pomeranian_Dog.jpg/500px-Pomeranian_Dog.jpg', answer: 'ぽめらにあん', wrong: ['といぷーどる', 'ちわわ', 'まるちーず'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Toy_Poodle.jpg/500px-Toy_Poodle.jpg', answer: 'といぷーどる', wrong: ['ぽめらにあん', 'まるちーず', 'びしょんふりぜ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Shiba_Inu_Taiki.jpg/500px-Shiba_Inu_Taiki.jpg', answer: 'しばいぬ', wrong: ['あきたけん', 'こーぎー', 'ぽめらにあん'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Chihuahua1_bvdb.jpg/500px-Chihuahua1_bvdb.jpg', answer: 'ちわわ', wrong: ['ぱぴよん', 'ぽめらにあん', 'だっくすふんど'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Golden_Retriever_with_tennis_ball.jpg/500px-Golden_Retriever_with_tennis_ball.jpg', answer: 'ごーるでん', wrong: ['らぶらどーる', 'しばいぬ', 'こーぎー'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Short-haired-Dachshund.jpg/500px-Short-haired-Dachshund.jpg', answer: 'だっくすふんど', wrong: ['こーぎー', 'ちわわ', 'びーぐる'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Sad-pug.jpg/500px-Sad-pug.jpg', answer: 'ぱぐ', wrong: ['ふれんちぶる', 'ぶるどっぐ', 'ぼすとんてりあ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/French_Bulldog_222.jpg/500px-French_Bulldog_222.jpg', answer: 'ふれんちぶる', wrong: ['ぱぐ', 'ぶるどっぐ', 'ちわわ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Welchcorgipembroke.JPG/500px-Welchcorgipembroke.JPG', answer: 'こーぎー', wrong: ['しばいぬ', 'だっくすふんど', 'びーぐる'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Maltese_dog.jpg/500px-Maltese_dog.jpg', answer: 'まるちーず', wrong: ['といぷーどる', 'ぽめらにあん', 'ちわわ'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Akita_inu_in_Riga_1.JPG/500px-Akita_inu_in_Riga_1.JPG', answer: 'あきたけん', wrong: ['しばいぬ', 'ごーるでん', 'こーぎー'] },
-            { img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Beagle_600.jpg/500px-Beagle_600.jpg', answer: 'びーぐる', wrong: ['だっくすふんど', 'こーぎー', 'ぱぐ'] }
+        const dogData = [
+            { name: "しばいぬ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Shiba_Inu_Taiki.jpg/600px-Shiba_Inu_Taiki.jpg" },
+            { name: "といぷーどる", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Toy_Poodle.jpg/600px-Toy_Poodle.jpg" },
+            { name: "こーぎー", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Welchcorgipembroke.JPG/600px-Welchcorgipembroke.JPG" },
+            { name: "しべりあんはすきー", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Black-Magic-Big-Boy.jpg/600px-Black-Magic-Big-Boy.jpg" },
+            { name: "ごーるでんれとりばー", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Golden_Retriever_with_tennis_ball.jpg/600px-Golden_Retriever_with_tennis_ball.jpg" },
+            { name: "だっくすふんど", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Short-haired-Dachshund.jpg/600px-Short-haired-Dachshund.jpg" },
+            { name: "ぽめらにあん", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Pomeranian_Dog.jpg/600px-Pomeranian_Dog.jpg" },
+            { name: "ふれんちぶるどっぐ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/French_Bulldog_222.jpg/600px-French_Bulldog_222.jpg" },
+            { name: "まるちーず", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Maltese_dog.jpg/600px-Maltese_dog.jpg" },
+            { name: "ぱぐ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Sad-pug.jpg/600px-Sad-pug.jpg" },
+            { name: "ちわわ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Chihuahua1_bvdb.jpg/600px-Chihuahua1_bvdb.jpg" },
+            { name: "びーぐる", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Beagle_600.jpg/600px-Beagle_600.jpg" },
+            { name: "だるめしあん", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Dalmatian_standing_looking_right.jpg/600px-Dalmatian_standing_looking_right.jpg" },
+            { name: "せんとばーなーど", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/St._Bernard_Dog.jpg/600px-St._Bernard_Dog.jpg" },
+            { name: "あきたけん", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Akita_inu_in_Riga_1.JPG/600px-Akita_inu_in_Riga_1.JPG" },
+            { name: "よーくしゃーてりあ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Yorkshire_Terrier.jpg/600px-Yorkshire_Terrier.jpg" },
+            { name: "びしょんふりーぜ", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Bichon_Fris%C3%A9_-_st%C3%A5ende_hund.jpg/600px-Bichon_Fris%C3%A9_-_st%C3%A5ende_hund.jpg" }
         ];
 
-        let currentQuestions = [];
+        let currentDataset = [];
+        let quizList = [];
         let currentQuestionIndex = 0;
         let score = 0;
         let isAnimating = false;
@@ -455,7 +463,7 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // 配列のシャッフル（Fisher-Yatesアルゴリズムで完全にランダム化）
+        // 配列のシャッフル（完全にランダム化）
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -465,20 +473,35 @@
             return arr;
         }
 
+        // ダミー選択肢を同じカテゴリから3つランダムに選ぶ
+        function generateOptions(correctName, fullData) {
+            const options = [correctName];
+            const others = fullData.filter(item => item.name !== correctName);
+            const shuffledOthers = shuffleArray(others);
+            
+            options.push(shuffledOthers[0].name);
+            options.push(shuffledOthers[1].name);
+            options.push(shuffledOthers[2].name);
+            
+            return shuffleArray(options); // 正解の場所もランダムにする
+        }
+
         function startGame(mode) {
             score = 0;
             currentQuestionIndex = 0;
             
-            // モードによって問題を切り替え、全体をシャッフルしてから最初の10問を取得
             if (mode === 'dog') {
-                currentQuestions = shuffleArray(dogQuizData).slice(0, 10);
+                currentDataset = dogData;
                 document.querySelector('.question-number').style.backgroundColor = 'var(--btn-blue)';
                 document.querySelector('.question-number').style.boxShadow = '0 4px 0 #0288D1';
             } else {
-                currentQuestions = shuffleArray(animalQuizData).slice(0, 10);
+                currentDataset = animalData;
                 document.querySelector('.question-number').style.backgroundColor = 'var(--btn-yellow)';
                 document.querySelector('.question-number').style.boxShadow = '0 4px 0 #F57F17';
             }
+            
+            // データセット全体をシャッフルし、先頭の10個を問題にする
+            quizList = shuffleArray(currentDataset).slice(0, 10);
             
             document.getElementById('score').innerText = score;
             
@@ -488,7 +511,7 @@
 
         function loadQuestion() {
             isAnimating = false;
-            const q = currentQuestions[currentQuestionIndex];
+            const currentItem = quizList[currentQuestionIndex];
             
             // ヘッダー更新
             document.querySelector('.question-number').innerText = `だい ${kanjiNumbers[currentQuestionIndex]} もん`;
@@ -499,7 +522,7 @@
             const errorText = document.getElementById('error-text');
             
             imgEl.className = 'animal-img'; // loadedクラスを外して非表示に
-            loadingText.style.display = 'block'; // ローディング文字を表示
+            loadingText.style.display = 'block';
             errorText.style.display = 'none';
             
             imgEl.onload = () => {
@@ -514,10 +537,10 @@
             };
 
             // 画像URLをセットして読み込み開始
-            imgEl.src = q.img;
+            imgEl.src = currentItem.img;
 
-            // 選択肢もランダムにシャッフルして生成
-            const options = shuffleArray([q.answer, ...q.wrong]);
+            // 選択肢の生成
+            const options = generateOptions(currentItem.name, currentDataset);
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
 
@@ -525,16 +548,22 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = optionText;
-                btn.onclick = () => checkAnswer(optionText, q.answer, btn);
+                
+                // 文字数が長い場合はフォントサイズを少し小さくする調整
+                if(optionText.length >= 8) {
+                    btn.style.fontSize = '0.95rem';
+                }
+                
+                btn.onclick = () => checkAnswer(optionText, currentItem.name, btn);
                 optionsContainer.appendChild(btn);
             });
         }
 
         // 次の画像を事前読み込みして待ち時間を減らす
         function preloadNextImage() {
-            if (currentQuestionIndex + 1 < currentQuestions.length) {
+            if (currentQuestionIndex + 1 < quizList.length) {
                 const img = new Image();
-                img.src = currentQuestions[currentQuestionIndex + 1].img;
+                img.src = quizList[currentQuestionIndex + 1].img;
             }
         }
 
@@ -567,7 +596,7 @@
             // 少し待ってから次の問題へ
             setTimeout(() => {
                 currentQuestionIndex++;
-                if (currentQuestionIndex < currentQuestions.length) {
+                if (currentQuestionIndex < quizList.length) {
                     loadQuestion();
                 } else {
                     showResult();
@@ -627,7 +656,6 @@
                 msg = 'また ちょうせん\nしてみてね！🐾';
             }
             
-            // 改行を反映
             document.getElementById('result-message').innerHTML = msg.replace(/\n/g, '<br>');
             switchScreen('result-screen');
         }
