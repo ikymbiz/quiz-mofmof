@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>もふもふクイズ</title>
+    <!-- 子供向けの丸みを帯びたポップなフォント -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+    <!-- 正解時の紙吹雪アニメーション用ライブラリ -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-bg: #FFE5E5;
+            --card-bg: #FFFFFF;
+            --text-main: #5D4037;
+            --btn-yellow: #FFCA28;
+            --btn-blue: #29B6F6;
+            --btn-green: #66BB6A;
+            --btn-pink: #EC407A;
+            --shadow-color: rgba(93, 64, 55, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            user-select: none;
+            touch-action: manipulation; /* スマホでのダブルタップズーム防止 */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            background-image: radial-gradient(#FFCDD2 3px, transparent 3px);
+            background-size: 40px 40px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 15px;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 40px;
+            box-shadow: 0 15px 35px var(--shadow-color);
+            padding: 40px 25px;
+            text-align: center;
+            position: relative;
+            border: 4px solid #FFF;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* スタート画面 */
+        .title {
+            font-size: 3.5rem;
+            color: var(--btn-pink);
+            margin-bottom: 10px;
+            line-height: 1.2;
+            text-shadow: 3px 3px 0px #FFF, 6px 6px 0px rgba(0,0,0,0.05);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #8D6E63;
+        }
+
+        .hero-img {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 10px solid var(--btn-yellow);
+            margin-bottom: 35px;
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .start-btn {
+            background-color: var(--btn-yellow);
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 900;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #F57F17, 0 15px 20px rgba(245, 127, 23, 0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .start-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 #F57F17, 0 5px 10px rgba(245, 127, 23, 0.4);
+        }
+
+        /* クイズ画面 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .question-number {
+            background-color: var(--btn-yellow);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 0 #F57F17;
+        }
+
+        .score-display {
+            color: var(--btn-pink);
+            background-color: #FCE4EC;
+            padding: 8px 20px;
+            border-radius: 30px;
+        }
+
+        .animal-img-container {
+            width: 100%;
+            height: 280px;
+            margin-bottom: 25px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            background-color: #F5F5F5;
+            position: relative;
+            border: 4px solid #FFF;
+        }
+
+        .loading-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #BCAAA4;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .animal-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+
+        .animal-img.loaded {
+            opacity: 1;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: white;
+            padding: 20px 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.15);
+            transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 rgba(0,0,0,0.15);
+        }
+
+        /* 選択肢のカラーバリエーション */
+        .option-btn:nth-child(1) { background-color: var(--btn-blue); box-shadow: 0 8px 0 #0288D1; }
+        .option-btn:nth-child(2) { background-color: var(--btn-green); box-shadow: 0 8px 0 #388E3C; }
+        .option-btn:nth-child(3) { background-color: var(--btn-yellow); box-shadow: 0 8px 0 #F57F17; }
+        .option-btn:nth-child(4) { background-color: var(--btn-pink); box-shadow: 0 8px 0 #C2185B; }
+
+        .option-btn:nth-child(1):active { box-shadow: 0 0 0 #0288D1; }
+        .option-btn:nth-child(2):active { box-shadow: 0 0 0 #388E3C; }
+        .option-btn:nth-child(3):active { box-shadow: 0 0 0 #F57F17; }
+        .option-btn:nth-child(4):active { box-shadow: 0 0 0 #C2185B; }
+
+        /* 正解・不正解時のハイライト */
+        .correct-highlight {
+            animation: correctPulse 1s infinite;
+            z-index: 10;
+        }
+
+        .wrong-highlight {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        /* リザルト画面 */
+        .result-title {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--btn-blue);
+        }
+
+        .final-score {
+            font-size: 5.5rem;
+            color: var(--btn-pink);
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 4px 4px 0px #FFF;
+        }
+
+        .result-msg {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* アニメーション用オーバーレイ */
+        #feedback-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 100;
+            visibility: hidden;
+        }
+
+        .feedback-mark {
+            font-size: 15rem;
+            font-weight: bold;
+            opacity: 0;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+
+        .feedback-mark.correct {
+            color: #FF5252;
+            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .feedback-mark.wrong {
+            color: #424242;
+            animation: dropShake 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+            40% { opacity: 1; transform: scale(1.2) rotate(10deg); }
+            80% { opacity: 1; transform: scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: scale(1); }
+        }
+
+        @keyframes dropShake {
+            0% { opacity: 0; transform: scale(1.5) translateY(-50px); }
+            20% { opacity: 1; transform: scale(1) translateY(0); }
+            40% { transform: translateX(-20px) rotate(-10deg); }
+            60% { transform: translateX(20px) rotate(10deg); }
+            80% { transform: translateX(-10px) rotate(-5deg); }
+            100% { opacity: 0; transform: translateX(0) rotate(0); }
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 480px) {
+            .title { font-size: 3rem; }
+            .animal-img-container { height: 240px; }
+            .option-btn { font-size: 1.4rem; padding: 15px 10px; }
+            .header { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- スタート画面 -->
+        <div id="start-screen" class="screen active">
+            <h1 class="title">もふもふ<br>クイズ</h1>
+            <p class="subtitle">どうぶつの なまえを あててね！<br>ぜんぶで 10もん あるよ🐾</p>
+            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop" alt="もふもふ猫" class="hero-img">
+            <br>
+            <button class="start-btn" onclick="startGame()">スタート！</button>
+        </div>
+
+        <!-- クイズ画面 -->
+        <div id="quiz-screen" class="screen">
+            <div class="header">
+                <div class="question-number">だい いち もん</div>
+                <div class="score-display">スコア: <span id="score">0</span></div>
+            </div>
+            
+            <div class="animal-img-container">
+                <div id="loading-text" class="loading-text">しゃしんを よみこみちゅう...</div>
+                <img id="question-img" class="animal-img" src="" alt="どうぶつ">
+            </div>
+
+            <div class="options" id="options-container">
+                <!-- ボタンはJSで生成 -->
+            </div>
+        </div>
+
+        <!-- リザルト画面 -->
+        <div id="result-screen" class="screen">
+            <h2 class="result-title">けっかは...</h2>
+            <div class="final-score" id="final-score-text">0 / 10</div>
+            <p class="result-msg" id="result-message">がんばったね！</p>
+            <button class="start-btn" onclick="goToStart()">もういっかい</button>
+        </div>
+    </div>
+
+    <!-- 正解/不正解のアニメーション用 -->
+    <div id="feedback-overlay">
+        <div id="feedback-mark" class="feedback-mark"></div>
+    </div>
+
+    <script>
+        // 小さな女の子が好きそうな「もふもふ動物」の確実な写真データ
+        const rawQuizData = [
+            { img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop', answer: 'ねこ', wrong: ['いぬ', 'きつね', 'たぬき'] },
+            { img: 'https://images.unsplash.com/photo-1591160690555-5debfba289f0?q=80&w=500&auto=format&fit=crop', answer: 'いぬ', wrong: ['ねこ', 'うさぎ', 'くま'] },
+            { img: 'https://images.unsplash.com/photo-1585110396000-c9faf4e4f9b8?q=80&w=500&auto=format&fit=crop', answer: 'うさぎ', wrong: ['ねずみ', 'はむすたー', 'いぬ'] },
+            { img: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?q=80&w=500&auto=format&fit=crop', answer: 'ぱんだ', wrong: ['しろくま', 'あらいぐま', 'こあら'] },
+            { img: 'https://images.unsplash.com/photo-1533514114760-4389f572ae26?q=80&w=500&auto=format&fit=crop', answer: 'もるもっと', wrong: ['はむすたー', 'うさぎ', 'ねずみ'] },
+            { img: 'https://images.unsplash.com/photo-1507666405895-422eee7d517f?q=80&w=500&auto=format&fit=crop', answer: 'りす', wrong: ['ねずみ', 'ももんが', 'きつね'] },
+            { img: 'https://images.unsplash.com/photo-1425082661705-1834bfd0999c?q=80&w=500&auto=format&fit=crop', answer: 'はむすたー', wrong: ['ねずみ', 'うさぎ', 'もるもっと'] },
+            { img: 'https://images.unsplash.com/photo-1548255745-779872c0c9ab?q=80&w=500&auto=format&fit=crop', answer: 'れっさーぱんだ', wrong: ['あらいぐま', 'ぱんだ', 'きつね'] },
+            { img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=500&auto=format&fit=crop', answer: 'ひつじ', wrong: ['あるぱか', 'やぎ', 'うし'] },
+            { img: 'https://images.unsplash.com/photo-1614031679201-163e52825596?q=80&w=500&auto=format&fit=crop', answer: 'ひよこ', wrong: ['あひる', 'にわとり', 'すずめ'] }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnimating = false;
+
+        // 漢数字への変換マスタ
+        const kanjiNumbers = ['いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう', 'じゅう'];
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 配列のシャッフル（Fisher-Yates）
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame() {
+            score = 0;
+            currentQuestionIndex = 0;
+            currentQuestions = shuffleArray(rawQuizData).slice(0, 10); // 10問をランダムに
+            document.getElementById('score').innerText = score;
+            
+            loadQuestion();
+            switchScreen('quiz-screen');
+        }
+
+        function loadQuestion() {
+            isAnimating = false;
+            const q = currentQuestions[currentQuestionIndex];
+            
+            // ヘッダー更新
+            document.querySelector('.question-number').innerText = `だい ${kanjiNumbers[currentQuestionIndex]} もん`;
+            
+            // 画像の読み込み処理
+            const imgEl = document.getElementById('question-img');
+            const loadingText = document.getElementById('loading-text');
+            
+            imgEl.className = 'animal-img'; // loadedクラスを外して非表示に
+            loadingText.style.display = 'block'; // ローディング文字を表示
+            
+            imgEl.onload = () => {
+                imgEl.classList.add('loaded'); // フェードイン
+                loadingText.style.display = 'none';
+            };
+            imgEl.src = q.img;
+
+            // 選択肢の生成
+            const options = shuffleArray([q.answer, ...q.wrong]);
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(optionText => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optionText;
+                // 引数に自身(btn)を渡して色を変えやすくする
+                btn.onclick = () => checkAnswer(optionText, q.answer, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct, selectedBtn) {
+            if (isAnimating) return; // アニメーション中の連打防止
+            isAnimating = true;
+
+            const isCorrect = selected === correct;
+            
+            // ボタンのハイライト演出
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText === correct) {
+                    btn.classList.add('correct-highlight'); // 正解をピカピカさせる
+                } else if (btn === selectedBtn && !isCorrect) {
+                    btn.classList.add('wrong-highlight'); // 間違えたボタンを暗くする
+                } else if (!isCorrect) {
+                    btn.classList.add('wrong-highlight'); // 他のボタンも暗くする
+                }
+            });
+
+            showFeedback(isCorrect);
+
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').innerText = score;
+                triggerConfetti();
+            }
+
+            // 少し待ってから次の問題へ
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < currentQuestions.length) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500); // 演出を見せるために待機時間を少し延長
+        }
+
+        function showFeedback(isCorrect) {
+            const overlay = document.getElementById('feedback-overlay');
+            const mark = document.getElementById('feedback-mark');
+            
+            overlay.style.visibility = 'visible';
+            
+            if (isCorrect) {
+                mark.innerText = '⭕️';
+                mark.className = 'feedback-mark correct';
+            } else {
+                mark.innerText = '❌';
+                mark.className = 'feedback-mark wrong';
+            }
+
+            // アニメーション終了後にリセット
+            setTimeout(() => {
+                mark.className = 'feedback-mark';
+                overlay.style.visibility = 'hidden';
+            }, 1000);
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#FFCA28', '#29B6F6', '#66BB6A', '#EC407A', '#ffffff'],
+                disableForReducedMotion: true
+            });
+        }
+
+        function showResult() {
+            document.getElementById('final-score-text').innerText = `${score} / 10`;
+            
+            let msg = '';
+            if (score === 10) {
+                msg = 'まんてん！✨\nもふもふマスター だね！🎉';
+                setTimeout(() => {
+                    triggerConfetti();
+                    setTimeout(triggerConfetti, 300);
+                }, 500);
+            } else if (score >= 7) {
+                msg = 'すごい！\nよくできました！💕';
+                setTimeout(triggerConfetti, 500);
+            } else if (score >= 4) {
+                msg = 'がんばったね！\nもうすこし！🌟';
+            } else {
+                msg = 'また ちょうせん\nしてみてね！🐾';
+            }
+            
+            // 改行を反映
+            document.getElementById('result-message').innerHTML = msg.replace(/\n/g, '<br>');
+            switchScreen('result-screen');
+        }
+
+        function goToStart() {
+            switchScreen('start-screen');
+        }
+    </script>
+</body>
+</html>
